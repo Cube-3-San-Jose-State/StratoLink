@@ -13,7 +13,7 @@ StratoLink is a motorized antenna system designed for reliable communication wit
 - Compatible with CanSat projects and other low-altitude satellite applications
 - Support for various communication protocols, including XBee with SMA connections
 
-##Applications
+## Applications
 StratoLink is suitable for various applications, such as:
 
 - Educational projects, including CanSat competitions
