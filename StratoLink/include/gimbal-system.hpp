@@ -1,15 +1,23 @@
 #pragma once
 #include <tuple>
+#include <AccelStepper.h> // Include the AccelStepper library
 #include "../include/LOS-Calculations.hpp"
 
 namespace StratoLink
 {
     class GimbalSystem
     {
+    private:
+        AccelStepper motor_rotation = AccelStepper(1, 2, 3, 4);
+        AccelStepper motor_pitch = AccelStepper(1, 5, 6, 7);
 
     public:
         GimbalSystem()
         {
+            motor_rotation.setMaxSpeed(200);
+            motor_rotation.setAcceleration(100);
+            motor_pitch.setMaxSpeed(200);
+            motor_pitch.setAcceleration(100);
         }
 
         void SetGimbalAngles(double x, double y, double z)
@@ -26,16 +34,20 @@ namespace StratoLink
             double elevation_degrees = degrees(elevation);
 
             // Set the gimbal angles
-            // Assuming you have a function called SetGimbalMotorAngles, which takes azimuth and elevation angles in degrees
-            SetGimbalMotorAngles(azimuth_degrees, elevation_degrees);
+            RunGimbalMotorAngles(azimuth_degrees, elevation_degrees);
         }
 
-        // Implement the SetGimbalMotorAngles function here to control your gimbal motors
-        void SetGimbalMotorAngles(double azimuth_degrees, double elevation_degrees)
+        void RunGimbalMotorAngles(double azimuth_degrees, double elevation_degrees)
         {
+            motor_rotation.moveTo(azimuth_degrees);
+            motor_pitch.moveTo(elevation_degrees);
 
-            // Your code to control the gimbal motors goes here
+            // Run the motors until they reach their target positions
+            while (motor_rotation.isRunning() || motor_pitch.isRunning())
+            {
+                motor_rotation.run();
+                motor_pitch.run();
+            }
         }
     };
-
 }
