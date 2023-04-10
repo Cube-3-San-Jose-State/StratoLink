@@ -8,7 +8,7 @@ namespace StratoLink
         "\"HRB\":%d,"
         "\"DEP\":%d,"
         "\"FLM\":\"%c\","
-        "\"GPS\":[%lf,%lf],"
+        "\"GPS\":[%lf,%lf, %lf],"
         "\"BAR\":[%f,%f],"
         "\"IMU\":[%d,%d,%d,%d,%d,%d,%f,%f]"
         "}";
@@ -18,19 +18,20 @@ namespace StratoLink
         "&heartbeat_count=%d"
         "&payload_deployed=%d"
         "&flight_mode=%c"
-        "&latitude=%lf&longitude=%lf"
-        "&altitude=%f,&temperature=%f"
+        "&latitude=%lf&longitude=%lf&exactAltitude=%f"
+        "&relativeAltitude=%f,&temperature=%f"
         "&acceleration_x=%d,&acceleration_y=%d,&acceleration_z=%d,&gyro_x=%d,&gyro_y=%d,&gyro_z=%d,&pitch=%f,&roll=%f";
 
     struct GPS_Data
     {
         double latitude;
         double longitude;
+        double exactAltitude;
     };
 
     struct Barometer_Data
     {
-        float altitude;
+        float relativeAltitude;
         float temperature;
     };
 
