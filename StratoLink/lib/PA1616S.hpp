@@ -1,3 +1,4 @@
+#pragma once
 #include <HardwareSerial.h>
 #include <vector>
 #include <string>
@@ -22,7 +23,7 @@
  * getLatitude() - gets latitude in GPS coordinates
  *
  */
-namespace CanSat
+namespace StratoLink
 {
     class PA1616S
     {

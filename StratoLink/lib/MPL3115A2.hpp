@@ -1,7 +1,7 @@
 /*
 	Code is largely based on code by Mario Canistra, Nathan Seidle,, and SparkFun.
 */
-
+#pragma once
 #include "Arduino.h"
 #include <Wire.h>
 
@@ -24,7 +24,7 @@
 #define OFF_T 0x2C
 #define OFF_H 0x2D
 
-namespace CanSat
+namespace StratoLink
 {
 	class MPL3115A2
 	{
