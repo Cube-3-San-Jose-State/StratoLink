@@ -44,15 +44,23 @@ namespace StratoLink
             _barometer.Update();
             double device_lat = _gps.GetLatitude();
             double device_lon = _gps.GetLongitude();
-            double device_alt = _barometer.ReadAltitude();
+            double device_exactAltitude = _gps.GetAltitude();
+            double device_relativeAltitude = _barometer.GetData().relativeAltitude;
+
+            // Compute the weighted average of GPS and barometric altitudes
+            const double gpsWeight = 0.7;
+            const double barometerWeight = 0.3;
+            double combinedAltitude = (device_exactAltitude * gpsWeight) + (device_relativeAltitude * barometerWeight);
 
             // Convert device and satellite coordinates to ECEF
             double device_x, device_y, device_z;
-            std::tie(device_x, device_y, device_z) = latLonAltToECEF(device_lat, device_lon, device_alt);
+            std::tie(device_x, device_y, device_z) = latLonAltToECEF(device_lat, device_lon, combinedAltitude);
 
             double sat_x, sat_y, sat_z;
-            double sat_alt = sat_data.barometer_data.altitude;
-            std::tie(sat_x, sat_y, sat_z) = latLonAltToECEF(sat_data.gps_data.latitude, sat_data.gps_data.longitude, sat_alt);
+            double sat_exactAltitude = sat_data.gps_data.exactAltitude;
+            double sat_relativeAltitude = sat_data.barometer_data.relativeAltitude; // TODO: Calculate if we need to take the relative or exact altitude from the satellite
+
+            std::tie(sat_x, sat_y, sat_z) = latLonAltToECEF(sat_data.gps_data.latitude, sat_data.gps_data.longitude, sat_exactAltitude);
 
             // Calculate the line-of-sight vector
             double los_vector_x = sat_x - device_x;
