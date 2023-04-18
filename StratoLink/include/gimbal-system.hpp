@@ -8,8 +8,14 @@ namespace StratoLink
     class GimbalSystem
     {
     private:
-        AccelStepper motor_rotation = AccelStepper(1, 2, 3, 4);
-        AccelStepper motor_pitch = AccelStepper(1, 5, 6, 7);
+        const int XstepPin = 2;
+        const int XdirPin = 3;
+        const int YstepPin = 4;
+        const int YdirPin = 5;
+
+        AccelStepper motor_rotation = AccelStepper(AccelStepper::DRIVER, XstepPin, XdirPin);
+        AccelStepper motor_pitch = AccelStepper(AccelStepper::DRIVER, YstepPin, YdirPin);
+
 
     public:
         GimbalSystem()
