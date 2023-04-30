@@ -46,7 +46,7 @@ void setup()
   Serial.begin(9600);
   GPS.Initialize();
   xbee.Initialize();
-  barometer.Initialize();
+  barometer.Initialize(10.0);
 }
 
 void loop()
