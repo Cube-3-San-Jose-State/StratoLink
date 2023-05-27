@@ -20,37 +20,54 @@ GimbalSystem gimbal_system;
 String json_data = "";
 int expected_heartbeat = 0;
 
-void GetSatData()
+String GetSatData()
 {
-  json_data = xbee.receiveData();
-  if (json_data.length() > 0)
+  try 
   {
-    Serial.println(json_data);
-    std::string json_std_string = json_data.c_str();
-    sat_data = mission_control_handler.ParseMissionControlData(json_std_string);
-    if (sat_data.heartbeat_count == expected_heartbeat)
+    json_data = xbee.receiveData();
+    if (json_data.length() > 0)
     {
-      expected_heartbeat++;
-      std::tuple<double, double, double> los_vector = los_calculator.CalculateLineofSightVector(sat_data);
-      gimbal_system.SetGimbalAngles(std::get<0>(los_vector), std::get<1>(los_vector), std::get<2>(los_vector));
-    }
-    else
-    {
-      Serial.println("Error: invalid heartbeat");
+      Serial.println(json_data);
+      std::string json_std_string = json_data.c_str();
+      sat_data = mission_control_handler.ParseMissionControlData(json_std_string);
+      if (sat_data.heartbeat_count == expected_heartbeat)
+      {
+        expected_heartbeat++;
+        std::tuple<double, double, double> los_vector = los_calculator.CalculateLineofSightVector(sat_data);
+        gimbal_system.SetGimbalAngles(std::get<0>(los_vector), std::get<1>(los_vector), std::get<2>(los_vector));
+      }
+      else
+      {
+        throw std::runtime_error("Error: invalid heartbeat");
+      }
     }
   }
+  catch (const std::exception& e) 
+  {
+    Serial.println(e.what());
+  }
+
+  return json_data;
 }
 
 void setup()
 {
   Serial.begin(9600);
-  GPS.Initialize();
-  xbee.Initialize();
-  barometer.Initialize(10.0);
+  try
+  {
+    GPS.Initialize();
+    xbee.Initialize();
+    barometer.Initialize(10.0);
+  }
+  catch(const std::exception& e)
+  {
+    Serial.println(e.what());
+    // Consider stopping the execution or implementing a recovery procedure
+  }
 }
 
 void loop()
 {
-  GetSatData();
-  delay(1000); // Wait for a second before trying to receive data again
+  Serial.println(GetSatData());
+  delay(100);
 }
